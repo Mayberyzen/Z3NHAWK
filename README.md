@@ -24,7 +24,7 @@ Z3NHAWK is a powerful and lightweight information-gathering tool designed for cy
 ## Usage 📌
 Run the tool by executing: 
 
-python zenhawk.py
+python z3nhawk.py
 
 Then enter a target IP or domain when prompted.
 
