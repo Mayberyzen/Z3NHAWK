@@ -1,6 +1,8 @@
 # Z3NHAWK - Information Gathering Tool
+Z3nHawk is evolving into a powerful Automated Pentest Framework, focusing on reconnaissance, scanning, exploit mapping, and reporting. This update is a step toward making it a full-fledged cybersecurity tool.
+🔥 Updated Z3nHawk Project with New Features & Enhancements!
 
-Z3NHAWK is a powerful and lightweight information-gathering tool designed for cybersecurity professionals and ethical hackers. It helps retrieve crucial details about domains, IP addresses, and services.
+This latest version of Z3nHawk brings significant improvements, making it a more robust and efficient reconnaissance tool for cybersecurity professionals and ethical hackers.
 
 ## Features 🚀
 - **WHOIS Lookup** – Retrieves domain registration details.
@@ -9,6 +11,10 @@ Z3NHAWK is a powerful and lightweight information-gathering tool designed for cy
 - **HTTP Headers** – Analyzes response headers for security insights.
 - **SSL/TLS Certificate Details** – Checks certificate validity and issuer.
 - **Port Scanning** – Scans all 65,535 ports to identify open services.
+🔥 What's New in 2.0?
+✅ Swift Subdomain Enumeration – Faster and more efficient discovery.
+✅ CVE Finder – Identify vulnerabilities with structured CVE lookup.
+✅ Tabular Result System – Clean, organized, and easy-to-read outputs.
 
 ## Installation ⚡
 1. Clone the repository:
