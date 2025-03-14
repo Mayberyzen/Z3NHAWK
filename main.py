@@ -23,7 +23,7 @@ console = Console()
 def main():
     """Main function to execute Z3nHawk 2.0 ."""
     console.print(Panel("[bold cyan]Z3NHAWK 2.0 by Ryzen - Automated Recon & Pentest Tool[/bold cyan]", style="bold white"))
-
+    console.print(Panel("[bold cyan]connect me on github-https://github.com/Mayberyzen/Z3NHAWK  Linkedin-linkedin.com/in/chetan-mahapatra-0113aa183""[/bold cyan]", style="bold white"))
     target = input("Enter the target IP or URL: ").strip()
     parsed_url = urlparse(target)
     domain = parsed_url.netloc if parsed_url.netloc else target
