@@ -1,4 +1,4 @@
-from recon import get_whois_info, get_dns_records, get_ip_info, enumerate_subdomains
+from recon import perform_ip_lookup, get_dns_records, get_ip_info, enumerate_subdomains
 from scanning import scan_ports, detect_services
 from vulnerability import check_vulnerabilities
 from report import display_results
@@ -36,7 +36,7 @@ def main():
 
    
     results = {}
-    results["WHOIS Information"] = get_whois_info(domain)
+    results["WHOIS Information"] = perform_ip_lookup(domain)
     results["DNS Records"] = get_dns_records(domain)
     results["IP Information"] = get_ip_info(ip)
     results["Subdomain Enumeration"] = enumerate_subdomains(domain)
