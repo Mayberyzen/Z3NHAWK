@@ -4,49 +4,34 @@ import socket
 from dns import resolver
 from ipwhois import IPWhois
 
-def get_whois_info(domain):
-    """Get WHOIS info with RDAP API fallback."""
+
+def perform_ip_lookup(domain):
     try:
-        print(f"[*] Fetching WHOIS data for {domain}...")
+        ip_address = socket.gethostbyname(domain)
+        print(f"[INFO] Resolved {domain} to IP address: {ip_address}")
+    except socket.gaierror:
+        return {"error": f"Unable to resolve domain: {domain}"}
 
-        # Attempt WHOIS lookup
-        w = whois.whois(domain)
-
-        if w.registrar:  # If successful, return WHOIS data
-            return {
-                "Domain": domain,
-                "Registrar": w.registrar,
-                "Creation Date": w.creation_date,
-                "Expiration Date": w.expiration_date,
-                "Name Servers": w.name_servers,
-            }
-
-    except Exception:
-        pass  # WHOIS failed, try RDAP API instead
-
-    return get_whois_from_api(domain)  # Fallback
-
-def get_whois_from_api(domain):
-    """Fallback WHOIS lookup using RDAP API."""
-    api_url = f"https://rdap.org/domain/{domain}"
     try:
-        response = requests.get(api_url, timeout=5)
-        if response.status_code == 200:
-            whois_data = response.json()
-            return {
-                "Domain": domain,
-                "Registrar": whois_data.get("handle", "N/A"),
-                "Creation Date": whois_data.get("events", [{}])[0].get("eventDate", "N/A"),
-                "Expiration Date": whois_data.get("events", [{}])[1].get("eventDate", "N/A"),
-                "Name Servers": whois_data.get("nameservers", "N/A"),
-            }
-    except Exception:
-        return {"Error": "WHOIS data unavailable (Blocked or Protected)"}
+        response = requests.get(f"https://ipinfo.io/{ip_address}/json")
+        response.raise_for_status()
+        ip_info = response.json()
+    except requests.RequestException as e:
+        return {"error": f"Error fetching IP information: {e}"}
+ 
+    ip_details = {
+        "IP Address": ip_address,
+        "Hostname": ip_info.get("hostname", "N/A"),
+        "City": ip_info.get("city", "N/A"),
+        "Region": ip_info.get("region", "N/A"),
+        "Country": ip_info.get("country", "N/A"),
+        "Location": ip_info.get("loc", "N/A"),
+        "Organization": ip_info.get("org", "N/A"),
+        "ASN": ip_info.get("asn", {}).get("asn", "N/A"),
+        "ISP": ip_info.get("asn", {}).get("name", "N/A"),
+    }
 
-# ----------------------------------------
-# ✅ DNS RECORD LOOKUP
-# ----------------------------------------
-
+    return ip_details
 def get_dns_records(domain):
     """Fetches A, MX, and TXT records for a domain."""
     records = {}
@@ -58,10 +43,6 @@ def get_dns_records(domain):
         return {"Error": "DNS lookup failed"}
     
     return records
-
-# ----------------------------------------
-# ✅ IP WHOIS INFORMATION
-# ----------------------------------------
 
 def get_ip_info(ip):
     """Fetches IP WHOIS information."""
@@ -76,19 +57,11 @@ def get_ip_info(ip):
         }
     except Exception:
         return {"Error": "IP lookup failed"}
-
-# ----------------------------------------
-# ✅ SUBDOMAIN ENUMERATION (Passive + Brute-Force)
-# ----------------------------------------
-
+    
 def enumerate_subdomains(domain):
     """Enumerate subdomains using crt.sh API and brute-force."""
     subdomains = set()
-
-    # Fetch subdomains from crt.sh API
     subdomains.update(get_subdomains_from_crtsh(domain))
-
-    # Add brute-force subdomains
     subdomains.update(brute_force_subdomains(domain))
 
     return {"Subdomains": list(subdomains)}
@@ -117,7 +90,7 @@ def brute_force_subdomains(domain):
     for sub in wordlist:
         full_domain = f"{sub}.{domain}"
         try:
-            socket.gethostbyname(full_domain)  # Check if subdomain resolves
+            socket.gethostbyname(full_domain)  
             subdomains.add(full_domain)
         except socket.gaierror:
             continue
