@@ -1,5 +1,3 @@
-
-# scanning.py - Multi-threaded Port Scanning and Service Detection
 import socket
 import threading
 
@@ -14,7 +12,7 @@ def scan_ports(target, port_list=None, thread_count=50):
     
     def scan_port(port):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(0.3)  # Reduced timeout for faster scanning
+        sock.settimeout(0.3) 
         if sock.connect_ex((target, port)) == 0:
             with lock:
                 open_ports.append(port)
@@ -22,7 +20,7 @@ def scan_ports(target, port_list=None, thread_count=50):
     
     for port in port_list:
         while threading.active_count() > thread_count:
-            pass  # Limit active threads to avoid overload
+            pass  
         thread = threading.Thread(target=scan_port, args=(port,))
         threads.append(thread)
         thread.start()
@@ -31,17 +29,26 @@ def scan_ports(target, port_list=None, thread_count=50):
         thread.join()
     
     return open_ports if open_ports else None
+
 def detect_services(target, open_ports):
-    """Detects services running on open ports."""
+    """Detects services and attempts to grab banners for version detection."""
     service_dict = {}
     
     for port in open_ports:
         try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(1)
+            sock.connect((target, port))
+            banner = sock.recv(1024).decode().strip()
+            sock.close()
+        except (socket.timeout, ConnectionRefusedError, UnicodeDecodeError):
+            banner = "Unknown Version"
+        
+        try:
             service_name = socket.getservbyport(port)
         except OSError:
             service_name = "Unknown"
-        service_dict[port] = service_name
+        
+        service_dict[port] = f"{service_name} - {banner}" if banner != "Unknown Version" else service_name
     
     return service_dict
-
-
