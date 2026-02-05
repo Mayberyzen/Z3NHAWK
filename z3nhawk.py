@@ -11,6 +11,25 @@ from modules import (banner, whois_lookup, dns_enum, ip_geo,
                      subdomain_enum, tech_detect, dir_bruteforce, email_harvest,cve_search,waf_detect)
 from utils.helpers import resolve_domain, print_error
 
+def install_requirements():
+    req_file = Path(__file__).parent / "requirements.txt"
+
+    if req_file.exists():
+        try:
+            subprocess.check_call([
+                sys.executable,
+                "-m",
+                "pip",
+                "install",
+                "-r",
+                str(req_file)
+            ])
+        except Exception as e:
+            print("[!] Failed installing dependencies:", e)
+            sys.exit(1)
+
+# Run dependency check first
+install_requirements()
 def get_port_choice():
     """Get port scan options from user"""
     print("\n[*] Port Scan Options:")
