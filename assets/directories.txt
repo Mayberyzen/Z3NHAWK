@@ -1,0 +1,30 @@
+# Admin panels
+admin
+administrator
+login
+wp-admin
+wp-login
+dashboard
+panel
+cpanel
+webmin
+
+# API endpoints
+api
+api/v1
+api/v2
+swagger
+api-docs
+graphql
+graphiql
+
+# Sensitive files
+robots.txt
+sitemap.xml
+.htaccess
+.htpasswd
+.git
+.env
+config.php
+backup
+backups
